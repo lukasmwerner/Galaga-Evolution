@@ -21,7 +21,7 @@ def run(player):
     displayWidth = displayHeight = 500
 
     screen = pygame.display.set_mode((displayWidth, displayHeight))
-    pygame.display.set_caption("Galaga Evolution")
+    pygame.display.set_caption("Galaga Evolution Testing...")
 
     running = True
     clock = pygame.time.Clock()
@@ -41,8 +41,7 @@ def run(player):
     score = 0
     level = 0
 
-    cyclesSinceLastHit = 0
-    speedPoints = 0
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -69,9 +68,6 @@ def run(player):
                     if proj.y in yposes:
                         try:
                             enemies.remove(enemy)
-                            if cyclesSinceLastHit <= 80:
-                                speedPoints += 1
-                            cyclesSinceLastHit = 0
                             score += 20
                         except Exception as e:
                             pass
@@ -79,12 +75,15 @@ def run(player):
             enemy.update(player)
         pygame.display.update()
         pygame.display.flip()
-        cyclesSinceLastHit += 1
         clock.tick(2000)
 
     pygame.quit()
-    #score += speedPoints * 1.8
     return {'score': score, 'player': player}
 
 if __name__ == "__main__":
-    run()
+    import sys
+    import pickle
+    args = sys.argv
+    with open(args[1], 'rb') as f:
+        player = pickle.load(f)
+    run(player)

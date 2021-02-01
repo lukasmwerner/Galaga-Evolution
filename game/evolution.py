@@ -6,11 +6,13 @@ import multiprocessing
 from multiprocessing import Pool
 from functools import partial
 import json
+import pickle
 
 if __name__ == "__main__":
     scoresOverTime = []
     generation = 1
-    population = [AiPlayer(brain=nn.Brain([0,0,0], [0,0,0])) for _ in range(0,50)]
+    populationCount = 50
+    population = [AiPlayer(brain=nn.Brain([0,0,0], [0,0,0])) for _ in range(0,populationCount)]
     mode = "m"
     while mode == "m" or mode == "s":
         try:
@@ -33,15 +35,17 @@ if __name__ == "__main__":
                 player.mutate(random.randrange(0,3))
             newPopulation[0] = best['player']
             population = newPopulation
-            generation +=1
             if maxScore <= 2000:
                 mode = "m"
             elif maxScore >= 2100:
                 mode = "s"
-            elif maxScore >= 5000:
-                mode = input("Mode (s/m/q): ")
+            if maxScore >= 5000:
+                mode = input("Mode (s/M/q): ") or "m"
             scoresOverTime.append(maxScore)
+            with open(f"checkpoints/checkpoint-gen-{generation}.pk", "wb") as f:
+                pickle.dump(best['player'], f)
             with open("socresOverTime.json", 'w') as f:
                 json.dump(scoresOverTime, f)
+            generation +=1
         except KeyboardInterrupt as e:
             break

@@ -20,7 +20,7 @@ class Enemy(object):
         self.x = home[0]
         self.y = home[1]
         self.mode = 0
-        self.step = 1
+        self.step = random.randrange(1,2)
         self.t = 0
 
     def show(self, screen: pygame.display, debug=False):
@@ -118,6 +118,7 @@ class AiPlayer(object):
         self.projectiles = []
         self.actions = np.asarray([0,0,0], dtype=np.float32)
         self.t = 0
+        self.totalShots = 0
 
     def move(self, xAmt, yAmt):
         newX = self.x + xAmt
@@ -136,6 +137,7 @@ class AiPlayer(object):
             self.projectiles.append(
                 Projectile(self.x+16, self.y-10, 3)
             )
+        self.totalShots +=1
 
     def update(self, nearestEnemy):
         for projectile in self.projectiles:
